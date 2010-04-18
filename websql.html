@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
+    <script type='text/javascript'>
+      var db = window.openDatabase('test');
+      db.transaction(function(tx){
+        tx.executeSql('create table if not exists notes(id integer primary key, description text,created_at datetime)',[]);
+      });
+      function createNote(text){
+        var now = new Date();
+        db.transaction(function(tx){
+          tx.executeSql('insert into notes (description,created_at) values(?,?)',[text,now],
+            function(tx,result){ displayNotes(); },
+            function(tx,error){ console.info(error.message); }
+          );
+        });
+      }
+      function destroyNote(id){
+        db.transaction(function(tx){
+          tx.executeSql('delete from notes where id = ?',[id],
+            function(tx,result){ displayNotes(); },
+            function(tx,error){ console.info(error.message); }
+          );
+        });
+      }
+      function displayNotes(){
+        db.transaction(function(tx){
+          tx.executeSql('select id, description from notes',[], function(tx,result){
+            $('#notes').empty();
+            $.each(result.rows,function(index){
+              var row = result.rows.item(index);
+              var li = $('<li/>');
+              var a = $('<a href="#?' + row['id'] + '">[x]</a>')
+              a.click(function(){
+                destroyNote(row['id']);
+                return false;
+              });
+              li.append(row['description']);
+              li.append(' ');
+              li.append(a);
+              $('#notes').append(li);
+            });
+          });
+        });
+      }
+      $(document).ready(function(){
+        displayNotes();
+        $('form').submit(function(e){
+          var input = $('form input[type=text]');
+          createNote(input.val());
+          input.val('');
+          return false;
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <form id='add_note' method='post'>
+      <input type='text' />
+      <input type='submit' value='Add a Note' />
+    </form>
+    <h1>Notes</h1>
+    <ul id='notes'></ul>
+  </body>
+</html>
