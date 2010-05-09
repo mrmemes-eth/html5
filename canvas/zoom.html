@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
+    <script type='text/javascript'>
+      $(document).ready(function(){
+        var tween = document.getElementById('tween');
+        var tweenContext   = tween.getContext('2d');
+
+        tweenContext.font = 'italic 3em serif';
+        tweenContext.textBaseline = 'top';
+        tweenContext.textAlign = 'center';
+        tweenContext.fillText('Zooooom',400,5);
+
+        var i = 0;
+        var intervalidID = setInterval(function(){
+          tweenContext.clearRect(0,50,800,200);
+          tweenContext.fillRect(i+=25,75,50,50);
+          if(i > 700) clearInterval(intervalidID);
+        }, 100);
+      });
+    </script>
+    <style type='text/css'>
+      canvas{ border: 1px dotted; }
+    </style>
+  </head>
+  <body>
+    <canvas id='tween' width='800' height='200'></canvas>
+  </body>
+</html>

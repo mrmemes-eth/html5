@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
+    <script type='text/javascript'>
+      $(document).ready(function(){
+        var rotate = document.getElementById('rotate');
+        var rotateContext   = rotate.getContext('2d');
+        rotateContext.translate(180,180)
+
+        var illusion = new Image();
+        illusion.src = 'illusion.png'
+        illusion.onload = function() {
+          setInterval(function(){
+            rotateContext.rotate(Math.PI * 5 / 180);
+            rotateContext.drawImage(illusion,-180,-180,360,360);
+          }, 5);
+        }
+
+      });
+    </script>
+  </head>
+  <body>
+    <canvas id='rotate' width='360' height='360'></canvas>
+  </body>
+</html>
